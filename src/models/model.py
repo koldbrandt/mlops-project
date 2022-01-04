@@ -81,10 +81,10 @@ def train(
 
             # Flatten images into a 784 long vector
             images.resize_(images.size()[0], 784)
-
             optimizer.zero_grad()
 
             output = model.forward(images)
+            print(type(output))
             loss = criterion(output, labels)
             loss.backward()
             optimizer.step()
