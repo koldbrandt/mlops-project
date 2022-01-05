@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import glob
-import pathlib
-import pickle
 import click
 import logging
 from pathlib import Path
@@ -10,7 +8,6 @@ import torch
 from torch.functional import Tensor
 from torchvision import transforms
 import numpy as np
-from dataset import CustomDataset
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset, TensorDataset
 @click.command()

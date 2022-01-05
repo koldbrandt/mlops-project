@@ -1,12 +1,7 @@
 import pathlib
-import pickle
-import sys
-
 import model as md
 import torch
 from torch import nn, optim
-from torch.utils.data import Dataset, TensorDataset
-import src.data.dataset as dataset
 import matplotlib.pyplot as plt
 
 
@@ -72,8 +67,7 @@ def main():
         "hidden_layers": [each.out_features for each in model.hidden_layers],
         "state_dict": model.state_dict(),
     }
-    cwd = pathlib.Path(__file__).parent.resolve()
-    torch.save(checkpoint, str(cwd) + "..\\..\\models\\checkpoint.pth")
+    torch.save(checkpoint, "models/checkpoint.pth")
 
 
 
