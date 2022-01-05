@@ -3,27 +3,29 @@ from model import Network
 import torch
 from torch import nn, optim
 import matplotlib.pyplot as plt
+import hydra
+import os
+@hydra.main(config_name= "training_conf.yaml" ,config_path="../../conf")
 
-
-def main():
-    print("Training day and night")
-
-    
+def main(cfg):
+    os.chdir(hydra.utils.get_original_cwd())
+    print("Working directory : {}".format(os.getcwd()))
+    print("Training day and night")    
     model = Network()
 
     model.train()
 
-    trainloader = torch.load("data/processed/train.pt")
+    trainloader = torch.load(cfg.train_data)
 
-    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = optim.SGD(model.parameters(), lr=cfg.lr, momentum=cfg.momentum)
     criterion = nn.CrossEntropyLoss()
 
     steps = 0
     running_loss = 0
     losses = []
     timestamp = []
-    epochs = 10
-    print_every = 40
+    epochs = cfg.epochs
+    print_every = cfg.print_every
     for e in range(epochs):
         # Model in training mode, dropout is on
         model.train()
