@@ -5,112 +5,36 @@ import torch.nn.functional as F
 from torch import nn
 
 
-class MyAwesomeModel(nn.Module):
-    def __init__(self, input_size, output_size, hidden_layers, drop_p=0.5):
-        """ Builds a feedforward network with arbitrary hidden layers.
-        
-            Arguments
-            ---------
-            input_size: integer, size of the input layer
-            output_size: integer, size of the output layer
-            hidden_layers: list of integers, the sizes of the hidden layers
-        
-        """
+class Network(nn.Module):
+    def __init__(self):
         super().__init__()
-        # Input to a hidden layer
-        self.hidden_layers = nn.ModuleList([nn.Linear(input_size, hidden_layers[0])])
-
-        # Add a variable number of more hidden layers
-        layer_sizes = zip(hidden_layers[:-1], hidden_layers[1:])
-        self.hidden_layers.extend([nn.Linear(h1, h2) for h1, h2 in layer_sizes])
-
-        self.output = nn.Linear(hidden_layers[-1], output_size)
-
-        self.dropout = nn.Dropout(p=drop_p)
-
+        # Inputs to hidden layer linear transformation
+        self.conv1 = nn.Conv2d(in_channels = 1, out_channels=8, kernel_size = 3)
+        self.conv2 = nn.Conv2d(in_channels = 8, out_channels=16 ,kernel_size = 5)
+        self.fc1 = nn.Linear(16*4*4,128)
+        self.fc2 = nn.Linear(128, 64)
+        # Output layer, 10 units - one for each digit
+        self.output = nn.Sequential(nn.Linear(64, 10), 
+                                   nn.LogSoftmax(dim=1))
+        #self.output = nn.Linear(64, 10)
+        
     def forward(self, x):
-        """ Forward pass through the network, returns the output logits """
+        # first conv
+        x = x.unsqueeze(1)
+        x = self.conv1(x)
+        x = F.relu(x)
+        x = F.max_pool2d(x,kernel_size=2,stride=2)
+        # second conv
+        x = self.conv2(x)
+        x = F.relu(x)
+        x = F.max_pool2d(x,kernel_size=2,stride=2)
+        
+        # Hidden layers
+        x = x.view(x.shape[0], -1)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        # Output layer with softmax activation
+        
+        x = self.output(x)        
+        return x
 
-        for each in self.hidden_layers:
-            x = F.relu(each(x))
-            x = self.dropout(x)
-        x = self.output(x)
-
-        return F.log_softmax(x, dim=1)
-
-
-def validation(model, testloader, criterion):
-    """
-        Validates the given model with the given test set.
-        Returns test loss and accuracy
-    """
-    accuracy = 0
-    test_loss = 0
-    for images, labels in testloader:
-
-        images = images.resize_(images.size()[0], 784)
-
-        output = model.forward(images)
-        test_loss += criterion(output, labels).item()
-
-        ## Calculating the accuracy
-        # Model's output is log-softmax, take exponential to get the probabilities
-        ps = torch.exp(output)
-        # Class with highest probability is our predicted class, compare with true label
-        equality = labels.data == ps.max(1)[1]
-        # Accuracy is number of correct predictions divided by all predictions, just take the mean
-        accuracy += equality.type_as(torch.FloatTensor()).mean()
-
-    return test_loss, accuracy
-
-
-def train(
-    model, trainloader, testloader, criterion, optimizer=None, epochs=5, print_every=40
-):
-    if optimizer is None:
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
-    steps = 0
-    running_loss = 0
-    losses = []
-    timestamp = []
-    for e in range(epochs):
-        # Model in training mode, dropout is on
-        model.train()
-        for images, labels in trainloader:
-            steps += 1
-
-            # Flatten images into a 784 long vector
-            images.resize_(images.size()[0], 784)
-            optimizer.zero_grad()
-
-            output = model.forward(images)
-            print(type(output))
-            loss = criterion(output, labels)
-            loss.backward()
-            optimizer.step()
-            running_loss += loss.item()
-
-            if steps % print_every == 0:
-                # Model in inference mode, dropout is off
-                model.eval()
-
-                # Turn off gradients for validation, will speed up inference
-                with torch.no_grad():
-                    test_loss, accuracy = validation(model, testloader, criterion)
-
-                print(
-                    "Epoch: {}/{}.. ".format(e + 1, epochs),
-                    "Training Loss: {:.3f}.. ".format(running_loss / print_every),
-                    "Test Loss: {:.3f}.. ".format(test_loss / len(testloader)),
-                    "Test Accuracy: {:.3f}".format(accuracy / len(testloader)),
-                )
-
-                losses.append(running_loss / print_every)
-                timestamp.append(steps)
-                running_loss = 0
-                # Make sure dropout and grads are on for training
-                model.train()
-    plt.plot(timestamp, losses)
-    plt.xlabel("step")
-    plt.ylabel("loss")
-    plt.show()

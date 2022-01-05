@@ -1,5 +1,5 @@
 import pathlib
-import model as md
+from model import Network
 import torch
 from torch import nn, optim
 import matplotlib.pyplot as plt
@@ -9,20 +9,20 @@ def main():
     print("Training day and night")
 
     
-    model = md.MyAwesomeModel(784, 10, [512, 256, 128])
+    model = Network()
 
     model.train()
 
     trainloader = torch.load("data/processed/train.pt")
 
-    criterion = nn.NLLLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    criterion = nn.CrossEntropyLoss()
 
     steps = 0
     running_loss = 0
     losses = []
     timestamp = []
-    epochs = 2
+    epochs = 10
     print_every = 40
     for e in range(epochs):
         # Model in training mode, dropout is on
@@ -31,12 +31,13 @@ def main():
             steps += 1
 
             # Flatten images into a 784 long vector
-            images.resize_(images.size()[0], 784)
+            #images.resize_(images.size()[0], 784)
             optimizer.zero_grad()
 
             labels = labels.type(torch.LongTensor)
+            
 
-            output = model.forward(images)
+            output = model(images)
             loss = criterion(output, labels)
             loss.backward()
             optimizer.step()
@@ -62,9 +63,6 @@ def main():
     plt.savefig("reports/figures/training.png")
     #plt.show()
     checkpoint = {
-        "input_size": 784,
-        "output_size": 10,
-        "hidden_layers": [each.out_features for each in model.hidden_layers],
         "state_dict": model.state_dict(),
     }
     torch.save(checkpoint, "models/checkpoint.pth")
