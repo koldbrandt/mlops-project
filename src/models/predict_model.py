@@ -1,6 +1,8 @@
 import torch
 from torch import nn
 from model import Network
+import wandb
+wandb.init()
 
 class Evaluate(object):
     def __init__(self):
@@ -13,6 +15,7 @@ class Evaluate(object):
         criterion = nn.NLLLoss()
         accuracy = 0
         test_loss = 0
+        first = True
         for images, labels in testloader:
             output = model.forward(images)
 
@@ -25,6 +28,16 @@ class Evaluate(object):
             ps = torch.exp(output)
             # Class with highest probability is our predicted class, compare with true label
             equality = labels.data == ps.max(1)[1]
+
+            if first:
+                my_table = wandb.Table()
+                my_table.add_column("image", [images.unsqueeze(1)[0]])
+                my_table.add_column("label", labels.data[0])
+                my_table.add_column("class_prediction", ps.max(1)[1])
+
+                # Log your Table to W&B
+                wandb.log({"mnist_predictions": my_table})
+                first = False
             # Accuracy is number of correct predictions divided by all predictions, just take the mean
             accuracy += equality.type_as(torch.FloatTensor()).mean()
 

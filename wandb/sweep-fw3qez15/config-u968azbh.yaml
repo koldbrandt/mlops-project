@@ -1,0 +1,8 @@
+wandb_version: 1
+
+epoch:
+  value: 20
+learning_rate:
+  value: 0.07982339528794484
+optimizer:
+  value: adam
