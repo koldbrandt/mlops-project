@@ -1,6 +1,4 @@
 import pytest
-import os
-os.chdir("../")
 from src.models.model import Network
 import torch
 
