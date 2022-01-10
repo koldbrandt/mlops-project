@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 import hydra
 import os
 import wandb
-import argparse
+wandb.init()
 
 
 
-#@hydra.main(config_name= "training_conf.yaml" ,config_path="../../conf")
+@hydra.main(config_name= "training_conf.yaml" ,config_path="../../conf")
 def main(cfg):
     os.chdir(hydra.utils.get_original_cwd())
     print("Working directory : {}".format(os.getcwd()))
@@ -83,7 +83,4 @@ def main(cfg):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()
-    wandb.init(config= args)
-    main(wandb.Config)
+    main()
