@@ -8,9 +8,10 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macOS-10.15, windows-2019]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -26,4 +27,5 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
+        pip install -e .
         pytest -v
