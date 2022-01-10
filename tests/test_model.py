@@ -1,5 +1,5 @@
 import pytest
-from src.models.model import Network
+from models.model import Network
 import torch
 
 @pytest.mark.parametrize("test_input,expected", [(torch.randn(1,2,3), ValueError), (torch.randn(1,28,3), ValueError), (torch.randn(1,2,28), ValueError)])
