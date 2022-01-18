@@ -11,11 +11,11 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Dataset, TensorDataset
 import hydra
 import os
+
+
 @click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-
-
+@click.argument("input_filepath", type=click.Path(exists=True))
+@click.argument("output_filepath", type=click.Path())
 def main(input_filepath, output_filepath):
     """ Runs data processing scripts to turn raw data from (../raw) into
         cleaned data ready to be analyzed (saved in ../processed).
@@ -25,7 +25,7 @@ def main(input_filepath, output_filepath):
 
     input_folder = f"{input_filepath}/raw/"
     output_folder = f"{output_filepath}/processed/"
-    train_files =  glob.glob(f"{input_folder}/train_*.npz")
+    train_files = glob.glob(f"{input_folder}/train_*.npz")
 
     x_train = []
     y_train = []
@@ -34,8 +34,8 @@ def main(input_filepath, output_filepath):
         with np.load(file) as data:
             x_train.extend(data["images"])
             y_train.extend(data["labels"])
-    
-    with np.load(input_folder+"/test.npz") as data:
+
+    with np.load(input_folder + "/test.npz") as data:
         x_test = data["images"]
         y_test = data["labels"]
 
@@ -45,22 +45,20 @@ def main(input_filepath, output_filepath):
     x_test = torch.Tensor(x_test)
     y_test = torch.Tensor(y_test)
 
-    train = DataLoader(TensorDataset(norm_transform(x_train), y_train),
-                       shuffle=True,
-                       batch_size=64)
-    
-    test = DataLoader(TensorDataset(norm_transform(x_test), y_test),
-                      shuffle=False,
-                      batch_size=64)
-    
+    train = DataLoader(
+        TensorDataset(norm_transform(x_train), y_train), shuffle=True, batch_size=64
+    )
+
+    test = DataLoader(
+        TensorDataset(norm_transform(x_test), y_test), shuffle=False, batch_size=64
+    )
+
     torch.save(train, f"{output_folder}train.pt")
     torch.save(test, f"{output_folder}test.pt")
 
 
-
-
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+if __name__ == "__main__":
+    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     # not used in this stub but often useful for finding various files
@@ -70,4 +68,3 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
 
     main()
-

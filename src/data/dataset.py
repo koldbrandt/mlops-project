@@ -1,5 +1,5 @@
-
 from torch.utils.data import Dataset, dataset
+
 
 class CustomDataset(Dataset):
     def __init__(self, images, labels, transform=None, target_transform=None):

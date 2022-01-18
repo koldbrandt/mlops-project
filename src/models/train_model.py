@@ -6,17 +6,16 @@ import matplotlib.pyplot as plt
 import hydra
 import os
 import wandb
+
 wandb.init()
 
 
-
-@hydra.main(config_name= "training_conf.yaml" ,config_path="../../conf")
+@hydra.main(config_name="training_conf.yaml", config_path="../../conf")
 def main(cfg):
     os.chdir(hydra.utils.get_original_cwd())
     print("Working directory : {}".format(os.getcwd()))
-    print("Training day and night")    
-    model = Network()   
-
+    print("Training day and night")
+    model = Network()
 
     # Magic
     wandb.watch(model, log_freq=cfg.print_every)
@@ -41,11 +40,10 @@ def main(cfg):
             steps += 1
 
             # Flatten images into a 784 long vector
-            #images.resize_(images.size()[0], 784)
+            # images.resize_(images.size()[0], 784)
             optimizer.zero_grad()
 
             labels = labels.type(torch.LongTensor)
-            
 
             output = model(images.unsqueeze(1))
             loss = criterion(output, labels)
@@ -58,10 +56,10 @@ def main(cfg):
 
                 # Model in inference mode, dropout is off
                 model.eval()
-                
+
                 print(
                     "Epoch: {}/{}.. ".format(e + 1, epochs),
-                    "Training Loss: {:.3f}.. ".format(running_loss / print_every)
+                    "Training Loss: {:.3f}.. ".format(running_loss / print_every),
                 )
 
                 losses.append(running_loss / print_every)
@@ -74,12 +72,11 @@ def main(cfg):
     plt.ylabel("loss")
     plt.savefig("reports/figures/training.png")
 
-    #plt.show()
+    # plt.show()
     checkpoint = {
         "state_dict": model.state_dict(),
     }
     torch.save(checkpoint, "models/checkpoint.pth")
-
 
 
 if __name__ == "__main__":

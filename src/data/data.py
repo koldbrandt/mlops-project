@@ -4,7 +4,8 @@ import torch
 from torchvision import transforms
 import hydra
 
-@hydra.main(config_name= "training_conf.yaml" ,config_path="../../conf")
+
+@hydra.main(config_name="training_conf.yaml", config_path="../../conf")
 def mnist(cfg):
     os.chdir(hydra.utils.get_original_cwd())
     trainloader = torch.load(cfg.train_data)
@@ -12,5 +13,5 @@ def mnist(cfg):
     return trainloader, testloader
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     mnist()

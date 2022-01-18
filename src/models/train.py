@@ -8,12 +8,12 @@ import os
 import wandb
 import argparse
 
+
 def main(cfg):
     os.chdir(hydra.utils.get_original_cwd())
     print("Working directory : {}".format(os.getcwd()))
-    print("Training day and night")    
-    model = Network()   
-
+    print("Training day and night")
+    model = Network()
 
     # Magic
     wandb.watch(model, log_freq=cfg.print_every)
@@ -38,11 +38,10 @@ def main(cfg):
             steps += 1
 
             # Flatten images into a 784 long vector
-            #images.resize_(images.size()[0], 784)
+            # images.resize_(images.size()[0], 784)
             optimizer.zero_grad()
 
             labels = labels.type(torch.LongTensor)
-            
 
             output = model(images)
             loss = criterion(output, labels)
@@ -55,10 +54,10 @@ def main(cfg):
 
                 # Model in inference mode, dropout is off
                 model.eval()
-                
+
                 print(
                     "Epoch: {}/{}.. ".format(e + 1, epochs),
-                    "Training Loss: {:.3f}.. ".format(running_loss / print_every)
+                    "Training Loss: {:.3f}.. ".format(running_loss / print_every),
                 )
 
                 losses.append(running_loss / print_every)
@@ -71,17 +70,16 @@ def main(cfg):
     plt.ylabel("loss")
     plt.savefig("reports/figures/training.png")
 
-    #plt.show()
+    # plt.show()
     checkpoint = {
         "state_dict": model.state_dict(),
     }
     torch.save(checkpoint, "models/checkpoint.pth")
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    wandb.init(config= args)
+    wandb.init(config=args)
     main(wandb.Config)
     main()
