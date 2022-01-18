@@ -1,6 +1,5 @@
 import argparse
 import os
-import pathlib
 
 import hydra
 import matplotlib.pyplot as plt
