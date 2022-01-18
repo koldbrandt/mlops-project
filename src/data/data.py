@@ -1,8 +1,9 @@
 import os
+
+import hydra
 import numpy as np
 import torch
 from torchvision import transforms
-import hydra
 
 
 @hydra.main(config_name="training_conf.yaml", config_path="../../conf")

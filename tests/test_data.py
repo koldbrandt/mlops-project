@@ -1,8 +1,10 @@
-import pytest
-import torch
-from tests import _PATH_DATA
 import math
 import os
+
+import pytest
+import torch
+
+from tests import _PATH_DATA
 
 
 @pytest.mark.skipif(not os.path.exists(_PATH_DATA), reason="Data files not found")

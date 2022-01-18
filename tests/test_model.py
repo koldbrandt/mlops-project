@@ -1,6 +1,7 @@
 import pytest
-from src.models.model import Network
 import torch
+
+from src.models.model import Network
 
 
 @pytest.mark.parametrize(

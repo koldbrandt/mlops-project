@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 import glob
-import click
 import logging
+import os
 from pathlib import Path
+
+import click
+import hydra
+import numpy as np
 import torch
 from torch.functional import Tensor
+from torch.utils.data import DataLoader, Dataset, TensorDataset
 from torchvision import transforms
-import numpy as np
-from torch.utils.data import DataLoader
-from torch.utils.data import Dataset, TensorDataset
-import hydra
-import os
 
 
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
 @click.argument("output_filepath", type=click.Path())
 def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    """Runs data processing scripts to turn raw data from (../raw) into
+    cleaned data ready to be analyzed (saved in ../processed).
     """
 
     norm_transform = transforms.Normalize((0.5,), (0.5,))

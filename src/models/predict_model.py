@@ -1,11 +1,12 @@
+import os
+
 import torch
-from torch import nn
-from model import Network
 
 # import wandb
 # wandb.init()
 import torchdrift
-import os
+from model import Network
+from torch import nn
 
 
 def corruption_function(x: torch.Tensor):

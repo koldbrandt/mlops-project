@@ -41,7 +41,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"mlops-project"
+project = "mlops-project"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -184,8 +184,8 @@ latex_documents = [
     (
         "index",
         "mlops-project.tex",
-        u"mlops-project Documentation",
-        u"Marcus Brandt",
+        "mlops-project Documentation",
+        "Marcus Brandt",
         "manual",
     ),
 ]
@@ -216,7 +216,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ("index", "mlops-project", u"mlops-project Documentation", [u"Marcus Brandt"], 1)
+    ("index", "mlops-project", "mlops-project Documentation", ["Marcus Brandt"], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -232,8 +232,8 @@ texinfo_documents = [
     (
         "index",
         "mlops-project",
-        u"mlops-project Documentation",
-        u"Marcus Brandt",
+        "mlops-project Documentation",
+        "Marcus Brandt",
         "mlops-project",
         "A Project created in the DTU course 02476",
         "Miscellaneous",

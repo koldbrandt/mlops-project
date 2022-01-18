@@ -1,10 +1,12 @@
-import pathlib
-from model import Network
-import torch
-from torch import nn, optim
-import matplotlib.pyplot as plt
-import hydra
 import os
+import pathlib
+
+import hydra
+import matplotlib.pyplot as plt
+import torch
+from model import Network
+from torch import nn, optim
+
 import wandb
 
 wandb.init()
