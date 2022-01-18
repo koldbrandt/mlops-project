@@ -3,13 +3,17 @@ from torch import nn
 from model import Network
 #import wandb
 #wandb.init()
+import torchdrift
+import os
+def corruption_function(x: torch.Tensor):
+    return torchdrift.data.functional.gaussian_blur(x.unsqueeze(1), severity=2)
 
 class Evaluate(object):
     def __init__(self):
         """
         Validates the given model with the given test set.
         """
-        
+
         model = self.load_checkpoint("checkpoint.pth")
         testloader = torch.load("data/processed/test.pt")
         criterion = nn.NLLLoss()
@@ -17,7 +21,7 @@ class Evaluate(object):
         test_loss = 0
         # first = True
         for images, labels in testloader:
-            output = model.forward(images)
+            output = model.forward(corruption_function(images))
 
             labels = labels.type(torch.LongTensor)
 

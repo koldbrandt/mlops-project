@@ -47,7 +47,7 @@ def main(cfg):
             labels = labels.type(torch.LongTensor)
             
 
-            output = model(images)
+            output = model(images.unsqueeze(1))
             loss = criterion(output, labels)
             loss.backward()
             optimizer.step()

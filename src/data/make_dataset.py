@@ -3,7 +3,6 @@ import glob
 import click
 import logging
 from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
 import torch
 from torch.functional import Tensor
 from torchvision import transforms
@@ -69,7 +68,6 @@ if __name__ == '__main__':
 
     # find .env automagically by walking up directories until it's found, then
     # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
 
     main()
 
